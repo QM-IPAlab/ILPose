@@ -1,0 +1,207 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+
+	<meta charset="UTF-8">
+	<title>Incremental Object 6D Pose Estimation</title>
+
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+	<link rel="stylesheet" type="text/css" href="layout.css">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+
+		h1 {
+			font-size: 200%;
+			text-align: center;
+		}
+
+		h2 {
+			font-size: 150%;
+			text-align: center;
+		}
+
+		h3 {
+			font-size: 100%;
+			text-align: center;
+		}
+
+		.center-justified {
+			text-align: justify;
+			margin: 0 auto;
+			width: 1000px;
+		}
+
+		.center {
+			text-align: center;
+		}
+
+	/* NAVIGATION */
+	nav {0
+		width: 100%;
+		margin: 0 auto;
+		background: #fff;
+	}
+
+	/* By Dominik Biedebach @domobch */
+	nav ul {
+		list-style: none;
+		text-align: center;
+	}
+	nav ul li {
+		display: inline-block;
+	}
+	nav ul li a {
+		display: block;
+		padding: 0px;
+		text-decoration: none;
+		color: #aaa;
+		font-weight: 800;
+		margin: 0 10px;
+	}
+	nav ul li a,
+	nav ul li a:after,
+	nav ul li a:before {
+		transition: all .5s;
+	}
+	nav ul li a:hover {
+		color: #555;
+	}
+
+	/* stroke */
+	nav.stroke ul li a,
+	nav.fill ul li a {
+		position: relative;
+	}
+	nav.stroke ul li a:after,
+	nav.fill ul li a:after {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: auto;
+		width: 0%;
+		content: '.';
+		color: transparent;
+		background: #333;
+		height: 1px;
+	}
+	nav.stroke ul li a:hover:after {
+		width: 100%;
+	}
+
+    .data-table {
+        border-collapse: collapse;
+    }
+    .border-top {
+        border-top: 1px solid #000;
+    }
+    .border-bottom {
+        border-bottom: 1px solid #000;
+    }
+    .border-left {
+        border-left: 1px solid #000;
+    }
+    .border-right {
+        border-right: 1px solid #000;
+    }
+</style>
+
+<script async src='/cdn-cgi/bm/cv/669835187/api.js'></script></head>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=AM_HTMLorMML-full"></script>
+
+<body>
+	<div class="center-justified" style="width:1000px;"> 
+		<h1>Incremental Object 6D Pose Estimation</h1>
+		<h3>Long Tian, Amelia Sorrenti, Yik Lung Pang, Giovanni Bellitto, Simone Palazzo, Concetto Spampinato, and Changjae Oh</h3>
+		<h3> Queen Mary University of London, United Kingdom </h3>
+		<h3> University of Catania, Italy </h3>
+	</div>
+	<div class="center-justified">
+		<p>
+				<b>ABSTRACT:</b> We present a novel setting for 6D object pose estimation, where a model progressively adapts its parameters to estimate the pose of new objects, without access to examples of past ones.
+								This capability is crucial for real-world applications, particularly in scenarios where a deployed model must accommodate new objects, such as new object grasping,
+								while mitigating the risk of forgetting previously seen objects. To tackle this challenge, we propose a replay-based incremental learning technique designed to retain key information
+								about previously seen objects when the model is exposed to a new one. Our approach relies on a memory buffer comprising keyframes of previously encountered objects,
+								serving to regularize the model parameters based on past experiences while allowing for the update of model features to perform pose estimation on new objects.
+								We validate the effectiveness of our method on the standard Linemod and YCB-Video datasets, demonstrating how our method surpasses baseline approaches in incremental learning at the task
+								at hand.
+
+        </p>
+
+		<br>
+		<br>
+
+
+<!--	<div style="text-align: center;">-->
+<!--		<img width=1000 src="framework/framework.png">-->
+<!--	</div>-->
+
+
+	<h2 class="Framework" style="text-align: left;">Framework</h2>
+	<div style="text-align: center;">
+		<video width="900" controls autoplay muted loop style="vertical-align: middle;"><source src="framework.mp4" type="video/mp4" >Your browser does not support the video tag.
+		</video>
+	</div>
+		<p>
+			 Our model takes RGB-D and its target object mask as input for 6D pose estimation.
+				The trained model is sequentially adapted to new objects by using data from both the new object and the memory buffer when a forgetting problem occurs with seen objects.
+				The memory buffer stores keyframes of previously seen objects.
+		</p>
+
+		<br>
+		<br>
+
+
+
+	<h2 class="Pseudo Code" style="text-align: left;">Pseudo Code</h2>
+		<div style="text-align: center;">
+			<img width=800 src="pseudo-code.png">
+		</div>
+
+		<p>
+			Initially, we exclusively use data from the new object to enable rapid adjustment of the network's trainable parameters to suit the characteristics of the new object.
+			After processing all new object data, we evaluate network performance on memory buffer data to detect any significant drop in performance on previously seen objects.
+			If the loss value exceeds a predefined threshold, indicating a decline in performance, we incorporate memory buffer data for training.
+			Conversely, if the loss value remains below the threshold, signifying retention of previously encountered objects, we refrain from adding memory buffer data to training to prevent overfitting.
+		</p>
+
+		<br>
+		<br>
+
+	<h2 class="Tracking results" style="text-align: left;">Results</h2>
+	<div style="text-align: center;">
+		<video width="900" controls autoplay muted loop style="vertical-align: middle;"><source src="linemod.mp4" type="video/mp4" >Your browser does not support the video tag.
+		</video>
+	</div>
+
+	<div style="text-align: center;">
+		<video width="900" controls autoplay muted loop style="vertical-align: middle;"><source src="ycb.mp4" type="video/mp4" >Your browser does not support the video tag.
+		</video>
+	</div>
+
+
+
+		<br>
+		<br>
+<!--		<iframe width="560" height="315" src="https://www.youtube.com/embed/J1j0ApREFn8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
+
+		
+
+
+
+	<h2 style="text-align: left;">Contacts</h2>
+	<p>
+		If you have any further enquiries, question, or comments, please contact 
+		<a href="mailto:long.tian@qmul.ac.uk"><u>long.tian@qmul.ac.uk</u></a>.
+	</p>
+
+		</div>
+	<br>
+	<br>
+<script type="text/javascript">(function(){window['__CF$cv$params']={r:'6de861896b0275cb',m:'ppqRX6tRQH4fUS12qEp4ASn7HTYLZcxczg_G238ujv8-1645031338-0-ASgYPROdw9+o4jFoUNr8Id49tDTtlx5gflbKrAkhfXy2ENQyKulR5gLqJ0Bkdz59YBZm/firsQF0/kj1XO5yyxa5ap7YlCONhhMEOMs9TeGlQzoXAMk4nHBNsniUUaUcRTdaSZhpPQGOa6qn4k9yqil4uoTx4WWfMhmspNBlh1UhCVyy0G3RKeZWSAkf/VI9eQ==',s:[0x1f8bab9e4e,0x98dc696c79],}})();</script></body> 
+</html>
