@@ -1,4 +1,4 @@
-# TA-6DT  
+# ILPose  
 Incremental Object 6D Pose Estimation
 
 [Project Page](https://qm-ipalab.github.io/ILPose/) 
